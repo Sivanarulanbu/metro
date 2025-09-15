@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metro Booking App — Neo UI</title>
+  <link rel="stylesheet" href="../metro/metro.css">
+  <script src="../metro/metro.js"></script>
+  
+</head>
+<body>
+  <div class="app-shell" id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-row">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">🚇</div>
+          <div>
+            <h1>Metro Express</h1>
+            <div class="sub">Fast • Reliable • Connected</div>
+          </div>
+        </div>
+        <div class="balance-chip">₹<span id="balance">250.00</span></div>
+      </div>
+    </header>
+
+    <!-- Main Screens -->
+    <main class="screens">
+      <!-- Booking Screen -->
+      <section class="screen active" id="booking-screen">
+        <div class="steps" aria-label="Booking steps">
+          <div class="step done" id="st-1">1</div>
+          <div class="step" id="st-2">2</div>
+          <div class="step" id="st-3">3</div>
+          <div class="step" id="st-4">4</div>
+        </div>
+
+        <!-- STEP 1: Route & Date -->
+        <div class="card" id="step-1">
+          <div class="group">
+            <label for="from">From Station</label>
+            <select id="from">
+              <option value="">Select departure station</option>
+              <option>Central Station</option>
+              <option>Business District</option>
+              <option>University</option>
+              <option>Airport</option>
+              <option>Mall Plaza</option>
+              <option>Sports Complex</option>
+              <option>Tech Park</option>
+              <option>City Center</option>
+            </select>
+          </div>
+          <div class="group">
+            <label for="to">To Station</label>
+            <select id="to">
+              <option value="">Select destination station</option>
+              <option>Central Station</option>
+              <option>Business District</option>
+              <option>University</option>
+              <option>Airport</option>
+              <option>Mall Plaza</option>
+              <option>Sports Complex</option>
+              <option>Tech Park</option>
+              <option>City Center</option>
+            </select>
+          </div>
+          <div class="group">
+            <label for="date">Journey Date</label>
+            <input type="date" id="date" />
+          </div>
+          <div class="group">
+            <label>Ticket Type</label>
+            <div class="ticket-types" id="type-box">
+              <div class="type-btn selected" data-type="standard"><div class="name">Standard</div><div class="meta">Base Price</div></div>
+              <div class="type-btn" data-type="premium"><div class="name">Premium</div><div class="meta">+50% Price</div></div>
+            </div>
+          </div>
+          <button class="btn primary" id="go-step-2">Select Train & Time</button>
+        </div>
+
+        <!-- STEP 2: Train schedule -->
+        <div class="card" id="step-2" style="display:none;">
+          <div class="group">
+            <label>Available Trains</label>
+            <div class="schedule" id="schedule"></div>
+          </div>
+          <div class="stack">
+            <button class="btn ghost" id="back-1">Back</button>
+            <button class="btn primary" id="go-step-3">Select Seats</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Seats -->
+        <div class="card" id="step-3" style="display:none;">
+          <div class="group">
+            <label for="passengers">Number of Passengers</label>
+            <select id="passengers">
+              <option value="1">1 Passenger</option>
+              <option value="2">2 Passengers</option>
+              <option value="3">3 Passengers</option>
+              <option value="4">4 Passengers</option>
+              <option value="5">5 Passengers</option>
+            </select>
+          </div>
+
+          <div class="legend">
+            <div><span class="box"></span> Available</div>
+            <div><span class="box sel"></span> Selected</div>
+            <div><span class="box occ"></span> Occupied</div>
+          </div>
+
+          <div id="coaches"></div>
+          <div class="stack">
+            <button class="btn ghost" id="back-2">Back</button>
+            <button class="btn primary" id="go-step-4">Passenger Details</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Passenger & Pay -->
+        <div class="card" id="step-4" style="display:none;">
+          <div id="pax-forms"></div>
+
+          <div class="group">
+            <label>Payment Method</label>
+            <div class="ticket-types" id="pay-box">
+              <div class="type-btn selected" data-pay="wallet">
+                <div class="name">Metro Wallet</div>
+                <div class="meta">Balance: ₹<span id="wallet-balance">250.00</span></div>
+              </div>
+              <div class="type-btn" data-pay="upi">
+                <div class="name">UPI Payment</div>
+                <div class="meta">GPay • PhonePe • Paytm</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary" id="summary" style="display:none;">
+            <div class="row"><span>Route</span><span id="sum-route">-</span></div>
+            <div class="row"><span>Train</span><span id="sum-train">-</span></div>
+            <div class="row"><span>Seats</span><span id="sum-seats">-</span></div>
+            <div class="row"><span>Base Fare</span><span id="sum-base">₹0.00</span></div>
+            <div class="row"><span>Premium Charges</span><span id="sum-prem">₹0.00</span></div>
+            <div class="row"><span>Convenience Fee</span><span>₹10.00</span></div>
+            <div class="row total"><span>Total</span><span id="sum-total">₹0.00</span></div>
+          </div>
+
+          <div class="stack">
+            <button class="btn ghost" id="back-3">Back</button>
+            <button class="btn secondary" id="confirm">Confirm Booking</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tickets Screen -->
+      <section class="screen" id="tickets-screen">
+        <div id="tickets-list">
+          <div class="empty">
+            <div class="big">🎫</div>
+            <h3>No Tickets Yet</h3>
+            <p>Book your first metro ticket to get started.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile Screen -->
+      <section class="screen" id="profile-screen">
+        <div class="card">
+          <div class="group">
+            <label for="fullname">Full Name</label>
+            <input id="fullname" type="text" value="Alex Johnson" />
+          </div>
+          <div class="group">
+            <label for="email">Email</label>
+            <input id="email" type="email" value="alex.johnson@email.com" />
+          </div>
+          <div class="group">
+            <label for="phone">Phone</label>
+            <input id="phone" type="tel" value="+1 (555) 123-4567" />
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="k" id="stat-trips">0</div><div class="l">Trips</div></div>
+            <div class="stat"><div class="k" id="stat-spent">₹0</div><div class="l">Spent</div></div>
+            <div class="stat"><div class="k">₹<span id="profile-balance">250.00</span></div><div class="l">Balance</div></div>
+          </div>
+          <div class="stack" style="margin-top:12px;">
+            <button class="btn primary" id="add-money">Add Money</button>
+            <button class="btn ghost">Update Profile</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Floating Nav -->
+    <nav class="nav" role="tablist" aria-label="Primary">
+      <div class="tab active" data-tab="booking" role="tab" aria-selected="true">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        Book
+      </div>
+      <div class="tab" data-tab="tickets" role="tab" aria-selected="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v10H4z"/><path d="M8 7v10M16 7v10"/></svg>
+        Tickets
+      </div>
+      <div class="tab" data-tab="profile" role="tab" aria-selected="false">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z"/><path d="M3 22a9 9 0 0 1 18 0"/></svg>
+        Profile
+      </div>
+    </nav>
+  </div>
+
+
+</body>
+</html>
